@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Enhance-d Color Scheme -->
+    <color name="primary">#5666F0</color>
+    <color name="white">#F1F5F9</color>
+    <color name="black">#0F1B24</color>
+    <color name="red">#E55050</color>
+    
+    <!-- Secondary Colors -->
+    <color name="berry">#1F2456</color>
+    <color name="violet">#7A56F0</color>
+    <color name="admiral">#171D82</color>
+    <color name="cerise">#818D98</color>
+    
+    <!-- Insulin Colors -->
+    <color name="carbs">#FF7D3E</color>
+    <color name="basal_insulin">#1C5E74</color>
+    <color name="bolus_insulin">#66B0CA</color>
+    <color name="sleep">#663399</color>
+    
+    <!-- Glucose level colors using Enhance-d scheme -->
+    <color name="glucose_normal">#5666F0</color>  <!-- Primary blue -->
+    <color name="glucose_high">#FF7D3E</color>    <!-- Carbs orange -->
+    <color name="glucose_low">#E55050</color>     <!-- Red -->
+    <color name="glucose_text">#F1F5F9</color>    <!-- Enhance-d white -->
+    
+    <!-- Legacy colors for compatibility -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-
-    <color name="red">#DA2146</color>
-
 </resources>

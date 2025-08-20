@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">INFLITE TYPE ONE CGM</string>
+    <string name="app_name">Enhance-d Club Glucose - Karoo</string>
+    <string name="extension_name">Enhance-d Club Glucose - Karoo</string>
+    <string name="glucose_display_name">Blood Glucose</string>
+    <string name="glucose_description">Blood glucose monitoring from Nightscout</string>
+    <string name="glucose_unit">mg/dl</string>
+    <string name="fetching_glucose">Fetching glucose data...</string>
+    <string name="glucose_error">Error fetching glucose data</string>
+    <string name="no_glucose_data">No glucose data available</string>
+    <string name="last_updated">Last updated: %s</string>
 </resources>

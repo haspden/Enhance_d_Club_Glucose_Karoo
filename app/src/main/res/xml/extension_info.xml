@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtensionInfo
+    id="enhanced_glucose"
+    displayName="Enhance-d Club Glucose - Karoo"
+    icon="@mipmap/ic_launcher"
+    scansDevices="false">
+    
+    <DataType
+        typeId="glucose"
+        description="@string/glucose_description"
+        displayName="Glu. mg"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
+        
+               <DataType
+               typeId="glucose_mmol"
+               description="Blood glucose in mmol/L"
+               displayName="Glu. mmol"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="time_since"
+               description="Time since last reading in seconds"
+               displayName="Time Since (s)"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="time_since_formatted"
+               description="Time since last reading formatted"
+               displayName="Time Since"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="direction_arrow"
+               description="Glucose direction with arrow"
+               displayName="Direction"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="delta_15m_mg"
+               description="15 minute glucose change in mg/dl"
+               displayName="15m Δ mg"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="delta_15m_mmol"
+               description="15 minute glucose change in mmol/L"
+               displayName="15m Δ mmol"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="delta_5m_mg"
+               description="5 minute glucose change in mg/dl"
+               displayName="5m Δ mg"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+           <DataType
+               typeId="delta_5m_mmol"
+               description="5 minute glucose change in mmol/L"
+               displayName="5m Δ mmol"
+               graphical="false"
+               icon="@mipmap/ic_launcher" />
+
+       </ExtensionInfo>

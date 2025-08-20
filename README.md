@@ -1,86 +1,398 @@
-# INFLITE TYPE ONE HAMMERHEAD KAROO / KAROO 2 CGM BLOOD GLUCOSE DATA WIDGET
+# Enhance-d Club Glucose - Karoo
 
-![Poster](media/poster.png?raw=true "Poster")
+**Professional glucose monitoring for Hammerhead Karoo cycling computers**
 
-Application for [INFLITE TYPE ONE](https://inflite.cc/typeone/) riders to display glucose values from their continuous glucose monitors via [Nightscout](https://github.com/nightscout/cgm-remote-monitor) to a Hammerhead Karoo / Karoo 2 bike computer.
+An Android application that fetches real-time blood glucose data from Nightscout servers and displays it as custom data fields on Hammerhead Karoo, Karoo 2, and Karoo 3 devices. Brought to you by Enhance-d Club.
 
-## Warning !
+![Enhance-d Club Glucose - Karoo](app/src/main/res/drawable/ic_enhanced_club_glucose.png)
 
-**_This app is in development and is not intended to be used to aid medical decisions._**
+## ⚠️ MEDICAL DISCLAIMER
 
-</br></br>
+**This is an OPEN SOURCE application intended for informational and educational purposes ONLY.**
 
-## Prerequisites !
+### Important Warnings:
 
-1. This app requires the user to have an active [Nightscout](https://github.com/nightscout/cgm-remote-monitor) website.
+- **NOT for medical diagnosis, treatment, or decision-making**
+- **NOT a replacement for professional medical advice**
+- **NOT for emergency medical situations**
+- **NOT for life-critical diabetes management decisions**
 
-2. This app requires an active data connection to your Hammerhead Karoo / Karoo 2 Device.
+### Open Source Notice:
 
-   **_WARNING ! DATA CHARGES MAY APPLY_**
+- This software is provided "AS IS" without warranty of any kind
+- The developers and contributors are not medical professionals
+- Code is publicly available and may be modified by anyone
+- No regulatory approval has been sought or obtained
+- You assume all risks associated with using open source medical software
 
-   Currently estimates look to be around 1mb/hour of ride time.
+### By using this app, you acknowledge that:
 
+- You understand this is experimental open source software
+- You will not use this app for medical treatment decisions
+- You accept full responsibility for any consequences of use
+- You will consult healthcare professionals for all medical advice
+- You understand the limitations of open source medical tools
 
-</br></br>
+**Always consult qualified healthcare professionals for medical decisions.**
 
-## Installation and Setup
-1. **Download**
+---
 
-   * You can download the most up to date release of this app by viewing the [releases](https://github.com/haspden/INFLITE-TYPE-ONE-Hammerhead-CGM/releases)
+## 🚴‍♂️ Features
 
+### Core Functionality
 
-2. **Installation**
+- **Real-time glucose monitoring** from Nightscout servers
+- **Multiple data fields** for comprehensive glucose tracking
+- **Color-coded display** based on glucose levels
+- **Direction indicators** showing glucose trends
+- **Time tracking** since last update
+- **Delta calculations** for 5m and 15m changes
 
-   * Sideload / Install this app onto your Hammerhead Karoo / Karoo 2 Device.
+### Available Data Fields
 
-   [DC Rainmaker provides instructions on sideloading here](https://www.dcrainmaker.com/2021/02/how-to-sideload-android-apps-on-your-hammerhead-karoo-1-karoo-2.html)
+- **Glu. mg** - Blood glucose in mg/dL
+- **Glu. mmol** - Blood glucose in mmol/L
+- **Time Since (s)** - Seconds since last reading
+- **Time Since** - Formatted time (h:m:s) since last reading
+- **Direction** - Glucose trend with arrow indicators
+- **15m Δ mg** - 15-minute glucose change in mg/dL
+- **15m Δ mmol** - 15-minute glucose change in mmol/L
+- **5m Δ mg** - 5-minute glucose change in mg/dL
+- **5m Δ mmol** - 5-minute glucose change in mmol/L
 
-3. **Setup / Use**
+### Direction Indicators
 
-   * Open the INFLITE TYPE ONE CGM App from the Apps screen on your Hammerhead Karoo / Karoo 2 Device.
-   * Enter your own [Nightscout](https://github.com/nightscout/cgm-remote-monitor) API Endpoint URL into the URL bar.
-      * This should be in the format https://yoursubdomain.yourdomain.tld/api/v1/entries/sgv.json
-      * example = https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json
+- ↓↓ "DoubleDown" - Rapidly falling
+- ↓ "SingleDown" - Falling
+- ↘ "FortyFiveDown" - Slowly falling
+- → "Flat" - Stable
+- ↗ "FortyFiveUp" - Slowly rising
+- ↑ "SingleUp" - Rising
+- ↑↑ "DoubleUp" - Rapidly rising
 
-   * Set your interval preferences for how ofter you want the app to poll for new values. Most CGMs pull data every 5 minutes, however we have set the default interval to 30 seconds to ensure a timely update after the CGM updates [Nightscout](https://github.com/nightscout/cgm-remote-monitor) with it's data.
+---
 
-   * Amend your ride profiles to add the new data fields into position. There are several to choose from
-      * **mmol/L** - Most recent blood glucose in mmol/L
-      * **mg/dL** - Most recent blood glucose in mg/dL
-      * **Direction Icons** - A graphical representation of the most recent direction
-      * **Direction Text** - A textual representation of the most recent direction
-      * **Direction History** - A graphical representation of the 5 most recent directions (right is most recent)
-      * **Last Update Timestamp** - The timestamp of the last updated data
-      * **Time Since Update** - Counting timer since last update e.g 00:01:30 for 1min 30sec
+## 📋 Prerequisites
 
-   * Direction graphical arrows and text strings are as follows
-      * ↓︎↓︎ "DoubleDown"
-      * ↓︎  "SingleDown"
-      * ↘︎  "FortyFiveDown"
-      * →︎  "Flat"
-      * ↑︎  "SingleUp"
-      * ↗︎  "FortyFiveUp"
-      * ↑︎↑︎ "DoubleUp"
+### Required
 
-</br></br>
+1. **Active Nightscout website** with glucose data
+2. **Hammerhead Karoo, Karoo 2, or Karoo 3** device
+3. **Active data connection** (WiFi or cellular)
+4. **USB debugging enabled** on Karoo device
 
-## About INFLITE TYPE ONE
+### Data Usage Warning
 
-[INFLITE TYPE ONE](https://inflite.cc/typeone/) are the UK's first and only cycling, running and triathlon teams to be made up entirely of athletes, living, racing the thriving with type one diabetes.
+- **Estimated usage**: ~1MB per hour of ride time
+- **Data charges may apply** depending on your cellular plan
+- **WiFi recommended** when available
 
-You can view more about the team by visiting https://inflitetypeone.cc
+---
 
-</br></br>
+## 🛠️ Installation
 
-## Contact
+### Method 1: Hammerhead App Installation (Recommended)
 
-If you have any questions relating to this app, please direct them to hammerheadcgm@inflitetypeone.cc
+1. **Download the APK** from the latest release
+2. **Install the Hammerhead app** on your phone:
+   - Available on [Google Play Store](https://play.google.com/store/apps/details?id=io.hammerhead.karoo) or [App Store](https://apps.apple.com/us/app/hammerhead-karoo/id1441752191)
+3. **Connect your Karoo device** to the same WiFi network as your phone
+4. **Open the Hammerhead app** and sign in with your Hammerhead account
+5. **Navigate to Device Settings** in the app
+6. **Select "Install APK"** or "Transfer APK" option
+7. **Upload the downloaded APK** file to your Karoo device
+8. **Follow the on-screen instructions** to complete installation
 
-</br></br>
+### Method 2: USB Debugging Installation
 
-## Screenshots
-![Poster](media/poster.png?raw=true "Poster")
-![Application](media/app-configuration.png?raw=true "Application")
-![App drawer](media/apps.png?raw=true "App drawer")
-![Ride elements](media/ride-elements.png?raw=true "Ride elements")
-![Ride elements 2](media/ride-elements2.png?raw=true "Ride elements")
+1. **Download the APK** from the latest release
+2. **Enable USB debugging** on your Karoo device:
+   - Go to Settings → About → Tap "Build Number" 7 times
+   - Go to Settings → Developer Options → Enable "USB Debugging"
+3. **Connect via USB** to your computer
+4. **Install the APK**:
+   ```bash
+   adb install app-debug.apk
+   ```
+
+### Method 3: Build from Source
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/henryaspden/Enhance_d_Club_Glucose_Karoo.git
+   cd Enhance_d_Club_Glucose_Karoo
+   ```
+2. **Build the project**:
+   ```bash
+   ./gradlew app:assembleDebug
+   ```
+3. **Install on device**:
+   ```bash
+   ./gradlew app:installDebug
+   ```
+
+### Installation Notes
+
+- **First-time installation**: You may need to enable "Install from Unknown Sources" in your Karoo's security settings
+- **App permissions**: The app will request necessary permissions on first launch
+- **Medical disclaimer**: You must accept the medical disclaimer before using the app
+- **Updates**: For app updates, uninstall the previous version before installing the new one
+
+---
+
+## ⚙️ Setup & Configuration
+
+### Initial Setup
+
+1. **Launch the app** from your Karoo's app drawer
+2. **Accept the medical disclaimer** (required on first launch)
+3. **Configure your Nightscout URL**:
+   - Format: `https://yoursubdomain.yourdomain.tld/api/v1/entries/sgv.json`
+   - Example: `https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json`
+   - Local: `http://127.0.0.1:17580/sgv.json` (for local setups)
+
+### Nightscout API Sources
+
+The app supports multiple Nightscout data sources:
+
+#### 1. **Nightscout Server** (Cloud-based)
+
+- **URL Format**: `https://yournightscout.com/api/v1/entries/sgv.json`
+- **Use Case**: Standard cloud-hosted Nightscout instances
+- **Requirements**: Internet connection, valid Nightscout URL
+- **Example**: `https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json`
+
+#### 2. **Phone Local Broadcast via Hotspot**
+
+- **URL Format**: `http://[GATEWAY_IP]:17580/sgv.json`
+- **Use Case**: xDrip+ or similar apps broadcasting glucose data
+- **Requirements**: Phone hotspot enabled, xDrip+ configured for broadcast
+- **Auto-detection**: App automatically detects gateway IP when connected to hotspot
+- **Example**: `http://192.168.1.1:17580/sgv.json`
+
+#### 3. **Local Karoo Device** (xDrip+ Local)
+
+- **URL Format**: `http://127.0.0.1:17580/sgv.json`
+- **Use Case**: xDrip+ running locally on the Karoo device
+- **Requirements**: xDrip+ installed and configured on Karoo
+- **Benefits**: No internet required, direct local access
+
+### Quick Fill Options
+
+The app provides convenient quick-fill buttons for common setups:
+
+- **Local Web** - `http://127.0.0.1:17580/sgv.json`
+- **Hotspot Device** - Auto-detects gateway IP and sets `http://[GATEWAY_IP]:17580/sgv.json`
+- **Nightscout** - `https://mynightscout.com/api/v1/entries/sgv.json`
+
+### App Settings
+
+- **Auto Refresh** - Enable automatic data updates
+- **Notifications** - Enable status notifications
+- **Restart App** - Apply configuration changes
+
+---
+
+## 🎯 Adding Data Fields to Karoo
+
+### Step-by-Step Instructions
+
+1. **Open Karoo Settings** on your device
+2. **Navigate to** Ride Profiles → Edit Profile
+3. **Add Data Fields**:
+   - Tap the "+" button to add a new field
+   - Search for "Enhance-d Club Glucose"
+   - Select your desired data field
+4. **Position the fields** where you want them on screen
+5. **Save the profile**
+
+### Recommended Field Layout
+
+```
+┌─────────────────────────────────┐
+│ Glu. mg    Direction    Time    │
+│ 145 mg/dL     ↗      00:02:15   │
+│                                │
+│ 15m Δ mg    5m Δ mg    Glu. mmol│
+│   +12 mg/dL  +5 mg/dL   8.1 mmol│
+└─────────────────────────────────┘
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**App not appearing in Karoo data fields:**
+
+- Ensure the app is installed and running
+- Check that the extension service is active
+- Restart the Karoo device
+
+**No glucose data showing:**
+
+- Verify your Nightscout URL is correct
+- Check your internet connection
+- Ensure your Nightscout site has recent glucose data
+- Check the app's "Last Updated" time
+
+**Data not updating:**
+
+- Verify auto-refresh is enabled
+- Check your data connection
+- Restart the app if needed
+
+**Connection errors:**
+
+- Verify your Nightscout site is accessible
+- Check firewall settings
+- Try using a different network
+
+**Hotspot connection issues:**
+
+- Ensure phone hotspot is enabled
+- Check that xDrip+ is configured to broadcast glucose data
+- Verify the Karoo is connected to the phone's hotspot
+- Try manually entering the gateway IP if auto-detection fails
+
+### Debug Information
+
+- **App logs**: Check Android logcat for detailed error messages
+- **Network status**: Verify connectivity to your Nightscout server
+- **Data format**: Ensure Nightscout returns valid JSON data
+
+---
+
+## 📊 Data Format
+
+The app expects glucose data in the Nightscout format:
+
+```json
+[
+  {
+    "_id": "689b739389c427000266181c",
+    "sgv": 154,
+    "direction": "FortyFiveDown",
+    "device": "AAPS-DexcomG6",
+    "mills": 1755018118000,
+    "units": "mg/dl"
+  }
+]
+```
+
+### Required Fields
+
+- `sgv` - Glucose value in mg/dL
+- `direction` - Trend direction (see Direction Indicators above)
+- `mills` - Timestamp in milliseconds
+
+---
+
+## 🎨 Color Coding
+
+Glucose values are automatically color-coded:
+
+- **🟢 Green (70-180 mg/dL)**: Normal range
+- **🟠 Orange (>180 mg/dL)**: High glucose
+- **🔴 Red (<70 mg/dL)**: Low glucose
+
+---
+
+## 🔄 Updates & Maintenance
+
+### App Updates
+
+- Check GitHub releases for new versions
+- Uninstall previous version before installing new one
+- Your settings will be preserved
+
+### Nightscout Updates
+
+- Ensure your Nightscout site is up to date
+- Check for any API changes that might affect the app
+- Verify data is being uploaded to Nightscout correctly
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+3. **Make your changes**
+4. **Test thoroughly**
+5. **Submit a pull request**
+
+### Development Setup
+
+- Android Studio 4.0+
+- Android SDK 21+
+- Karoo Ext library
+- Nightscout test instance
+
+---
+
+## 📞 Support
+
+### Getting Help
+
+- **GitHub Issues**: Report bugs and request features
+- **Documentation**: Check this README and code comments
+- **Community**: Join diabetes and cycling communities
+
+### Contact Information
+
+- **GitHub**: [Repository Issues](https://github.com/henryaspden/Enhance_d_Club_Glucose_Karoo/issues)
+- **Email**: [Your contact email]
+
+---
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **INFLITE TYPE ONE** - Inspiration from their [Karoo CGM project](https://github.com/haspden/TEAM-TYPE-ONE-STYLE-Karoo-CGM)
+- **CGM in the Cloud** - Community-driven diabetes technology
+- **xDrip+** - Open source diabetes management
+- **Hammerhead** - Karoo platform and extension framework
+- **Nightscout** - Open source CGM data platform
+
+---
+
+## 📈 Version History
+
+### v2.0.0 (Current)
+
+- Updated version numbering
+- Enhanced Nightscout API source documentation
+- Improved hotspot detection and configuration
+- Better error handling and user feedback
+- Professional branding and medical disclaimers
+
+### v0.1.0 (Previous)
+
+- Initial release
+- Basic glucose monitoring
+- Multiple data fields
+- Medical disclaimer
+- Professional branding
+
+### Planned Features
+
+- Custom data field layouts
+- Advanced trend analysis
+- Integration with other diabetes apps
+- Enhanced error handling
+- Additional Nightscout API source support
+
+---
+
+**Remember: This app is for informational purposes only. Always consult healthcare professionals for medical decisions.**
+
+_Brought to you by Enhance-d Club_
