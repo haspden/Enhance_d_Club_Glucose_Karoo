@@ -78,6 +78,51 @@
 
             </androidx.cardview.widget.CardView>
 
+            <!-- API Token Configuration Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="API Token (Optional):"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvCurrentApiToken"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Not configured"
+                        android:textSize="12sp"
+                        android:textColor="@android:color/darker_gray"
+                        android:background="@android:color/transparent"
+                        android:padding="8dp"
+                        android:layout_marginBottom="12dp" />
+
+                    <Button
+                        android:id="@+id/btnConfigureApiToken"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Configure API Token"
+                        android:textSize="14sp"
+                        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <!-- Restart App Section -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -222,7 +267,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Version 2.0.0"
+                        android:text="Version 2.1.0"
                         android:textSize="14sp"
                         android:textColor="@android:color/darker_gray"
                         android:layout_marginBottom="8dp" />

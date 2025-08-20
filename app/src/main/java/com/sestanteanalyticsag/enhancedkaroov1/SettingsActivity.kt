@@ -17,6 +17,7 @@ class SettingsActivity : AppCompatActivity() {
         private const val TAG = "SettingsActivity"
         private const val PREFS_NAME = "GlucoseDataFieldPrefs"
         private const val KEY_NIGHTSCOUT_URL = "nightscout_url"
+        private const val KEY_API_TOKEN = "api_token"
         private const val KEY_AUTO_REFRESH = "auto_refresh"
         private const val KEY_NOTIFICATIONS = "notifications"
         private const val DEFAULT_URL = "http://127.0.0.1:17580/sgv.json"
@@ -40,9 +41,18 @@ class SettingsActivity : AppCompatActivity() {
         val currentUrl = getStoredUrl()
         binding.tvCurrentUrl.text = currentUrl
         
+        // Display current API token status
+        val currentToken = getStoredApiToken()
+        binding.tvCurrentApiToken.text = if (currentToken.isNotEmpty()) "Configured: $currentToken" else "Not configured"
+        
         // Set up URL configuration button
         binding.btnConfigureUrl.setOnClickListener {
             showUrlConfigurationDialog()
+        }
+        
+        // Set up API token configuration button
+        binding.btnConfigureApiToken.setOnClickListener {
+            showApiTokenConfigurationDialog()
         }
         
         // Set up restart app button
@@ -112,6 +122,52 @@ class SettingsActivity : AppCompatActivity() {
         dialog.show()
     }
     
+    private fun showApiTokenConfigurationDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_api_token_config, null)
+        val tokenEditText = dialogView.findViewById<android.widget.EditText>(R.id.etApiToken)
+        val showTokenSwitch = dialogView.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.switchShowToken)
+        
+        // Set current token
+        val currentToken = getStoredApiToken()
+        if (currentToken.isNotEmpty()) {
+            tokenEditText.setText(currentToken)
+        }
+        
+        // Set up show/hide toggle
+        showTokenSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                tokenEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                tokenEditText.inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+        }
+        
+        val dialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setPositiveButton("Save") { _, _ ->
+                val newToken = tokenEditText.text.toString().trim()
+                if (newToken.isNotEmpty()) {
+                    saveApiToken(newToken)
+                    binding.tvCurrentApiToken.text = "Configured: $newToken"
+                    Toast.makeText(this, "API token updated. Restart app to apply changes.", Toast.LENGTH_LONG).show()
+                } else {
+                    // Clear the token
+                    saveApiToken("")
+                    binding.tvCurrentApiToken.text = "Not configured"
+                    Toast.makeText(this, "API token cleared. Restart app to apply changes.", Toast.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .setNeutralButton("Clear Token") { _, _ ->
+                saveApiToken("")
+                binding.tvCurrentApiToken.text = "Not configured"
+                Toast.makeText(this, "API token cleared. Restart app to apply changes.", Toast.LENGTH_LONG).show()
+            }
+            .create()
+        
+        dialog.show()
+    }
+    
     private fun getDefaultGatewayIp(): String? {
         return try {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -161,6 +217,16 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveUrl(url: String) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_NIGHTSCOUT_URL, url).apply()
+    }
+    
+    private fun getStoredApiToken(): String {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_API_TOKEN, "") ?: ""
+    }
+    
+    private fun saveApiToken(token: String) {
+        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_API_TOKEN, token).apply()
     }
     
     private fun getStoredAutoRefresh(): Boolean {

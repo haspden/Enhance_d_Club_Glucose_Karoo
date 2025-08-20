@@ -56,7 +56,7 @@
 ---
 
 **Version**: 2.0.0  
-**Release Date**: December 2024  
+**Release Date**: August 20, 2025  
 **File Size**: 8.2 MB  
 **Supported Devices**: Karoo, Karoo 2, Karoo 3
 

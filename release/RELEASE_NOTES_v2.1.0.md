@@ -1,58 +1,59 @@
-# Enhance-d Club Glucose - Karoo v2.0.0
+# Enhance-d Club Glucose - Karoo v2.1.0
 
 ## 🎉 Release Highlights
 
 **Professional glucose monitoring for Hammerhead Karoo cycling computers**
 
-This release brings significant improvements to the Enhance-d Club Glucose app, including enhanced Nightscout API source support, improved user experience, and better documentation.
+This release brings enhanced API token management with improved visibility and user experience for the Enhance-d Club Glucose app.
+
+![Enhance-d Club Glucose - Karoo](app/src/main/res/drawable/ic_enhanced_club_glucose.png)
 
 ## 📋 What's New
 
 ### ✨ New Features
 
-- **Enhanced Nightscout API Source Support**: Added comprehensive documentation and support for multiple Nightscout data sources
-- **API Token Authentication**: Optional API token support for secure Nightscout server access
-- **Improved Hotspot Detection**: Better auto-detection of gateway IP when using phone hotspot
-- **Updated Installation Methods**: Added Hammerhead app installation method for easier setup
-- **Karoo 3 Support**: Officially added support for Karoo 3 devices
+- **Enhanced API Token Visibility**: API tokens are now visible by default for easier verification and editing
+- **Show/Hide Token Toggle**: Optional toggle to hide API tokens for privacy when needed
+- **Improved Token Management**: Better user interface for configuring and managing API tokens
+- **Real-time Token Display**: See the actual token value in Settings instead of just character count
 
 ### 🔧 Improvements
 
-- **Better Error Handling**: Enhanced error messages and user feedback
-- **Improved Settings UI**: More intuitive configuration interface
-- **Enhanced Documentation**: Comprehensive README with detailed setup instructions
-- **Professional Branding**: Updated app branding and medical disclaimers
+- **Better User Experience**: More intuitive API token configuration
+- **Enhanced Security Options**: Users can choose to hide tokens when needed
+- **Improved Token Editing**: Clear visibility of tokens during configuration
+- **Better Visual Feedback**: Actual token values displayed in Settings
 
 ### 🐛 Bug Fixes
 
-- Fixed version numbering consistency across the app
-- Improved network connectivity handling
-- Enhanced app stability and performance
+- Fixed token display issues in Settings
+- Improved token input handling
+- Enhanced error handling for token configuration
 
 ## 📱 Supported Devices
 
 - **Hammerhead Karoo**
 - **Hammerhead Karoo 2**
-- **Hammerhead Karoo 3** (New!)
+- **Hammerhead Karoo 3**
 
 ## 🔗 Nightscout API Sources
 
-The app now supports three different Nightscout data sources:
+The app supports multiple Nightscout data sources:
 
-### 1. Nightscout Server (Cloud-based)
+### 1. **Nightscout Server** (Cloud-based)
 
 - Standard cloud-hosted Nightscout instances
 - Requires internet connection
 - Optional API token authentication for secure access
 - Example: `https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json`
 
-### 2. Phone Local Broadcast via Hotspot
+### 2. **Phone Local Broadcast via Hotspot**
 
 - xDrip+ or similar apps broadcasting glucose data
 - Auto-detects gateway IP when connected to phone hotspot
 - Example: `http://192.168.1.1:17580/sgv.json`
 
-### 3. Local Karoo Device (xDrip+ Local)
+### 3. **Local Karoo Device** (xDrip+ Local)
 
 - xDrip+ running locally on the Karoo device
 - No internet required, direct local access
@@ -87,24 +88,66 @@ The app now supports three different Nightscout data sources:
 1. Download the APK from this release
 2. Enable USB debugging on your Karoo device
 3. Connect via USB to your computer
-4. Install using: `adb install Enhance-d_Club_Glucose_Karoo_v2.0.0.apk`
+4. Install using: `adb install Enhance-d_Club_Glucose_Karoo_v2.1.0.apk`
 
 ## ⚙️ Configuration
 
-### API Token Setup (Optional)
+### API Token Setup (Enhanced)
 
 If your Nightscout server requires authentication:
 
 1. **Open Settings** in the app
 2. **Tap "Configure API Token"**
-3. **Enter your API token** (will be masked for security)
-4. **Save the configuration**
-5. **Restart the app** to apply changes
+3. **Enter your API token** (visible by default for easy verification)
+4. **Use the toggle** to hide the token if needed for privacy
+5. **Save the configuration**
+6. **Restart the app** to apply changes
 
 The API token supports both:
 
 - **api-secret header**: Traditional Nightscout authentication
 - **Authorization header**: Bearer token authentication
+
+### Enhanced Token Features
+
+- **Default Visibility**: Tokens are shown by default for easier verification
+- **Privacy Toggle**: Optional switch to hide tokens when needed
+- **Real-time Display**: See actual token values in Settings
+- **Secure Storage**: Tokens stored securely in app preferences
+
+### Creating Nightscout Tokens
+
+#### **What are Nightscout Tokens?**
+
+Nightscout tokens are authentication credentials that allow secure access to your Nightscout site. They act like a "key" that grants specific permissions to access your glucose data.
+
+#### **When Do You Need a Token?**
+
+**You need a token if:**
+
+- Your Nightscout site is **not publicly accessible** (most common)
+- Your site requires authentication to view data
+- You want to restrict access to specific users
+- Your site uses `AUTH_DEFAULT_ROLES` set to `denied`
+
+**You don't need a token if:**
+
+- Your Nightscout site is publicly accessible
+- Your site allows anonymous read access
+- You're using local xDrip+ without authentication
+
+#### **Creating Tokens:**
+
+To create authentication tokens for your Nightscout site, follow the [official Nightscout documentation](https://nightscout.github.io/nightscout/admin_tools/):
+
+1. **Access Admin Tools**: Click the settings panel (three horizontal bars) in your Nightscout website and select "Admin Tools"
+2. **Create Token**: Click "Add New Subject" and choose the appropriate role:
+   - **`readable`**: Read-only access (recommended for this app)
+   - **`careportal`**: Can view and make treatment entries
+   - **`admin`**: Full access
+3. **Copy Token**: Use the generated token string for authentication
+
+_Note: If you change your API_SECRET, all tokens will change and need to be updated._
 
 ## ⚠️ Important Notes
 
@@ -176,9 +219,9 @@ _Together, we're proving that diabetes doesn't define limits._
 
 ---
 
-**Version**: 2.0.0  
+**Version**: 2.1.0  
 **Release Date**: August 20, 2025  
-**File**: `Enhance-d_Club_Glucose_Karoo_v2.0.0.apk`  
+**File**: `Enhance-d_Club_Glucose_Karoo_v2.1.0.apk`  
 **Size**: See file details below
 
 ---

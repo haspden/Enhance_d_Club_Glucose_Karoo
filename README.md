@@ -150,6 +150,43 @@ An Android application that fetches real-time blood glucose data from Nightscout
    - Format: `https://yoursubdomain.yourdomain.tld/api/v1/entries/sgv.json`
    - Example: `https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json`
    - Local: `http://127.0.0.1:17580/sgv.json` (for local setups)
+4. **Configure API Token** (optional):
+   - If your Nightscout server requires authentication
+   - Enter your API token in the Settings → API Token section
+   - The token will be stored securely and visible in the interface
+   - Use the toggle to hide the token for privacy if needed
+
+#### **What are Nightscout Tokens?**
+
+Nightscout tokens are authentication credentials that allow secure access to your Nightscout site. They act like a "key" that grants specific permissions to access your glucose data.
+
+#### **When Do You Need a Token?**
+
+**You need a token if:**
+
+- Your Nightscout site is **not publicly accessible** (most common)
+- Your site requires authentication to view data
+- You want to restrict access to specific users
+- Your site uses `AUTH_DEFAULT_ROLES` set to `denied`
+
+**You don't need a token if:**
+
+- Your Nightscout site is publicly accessible
+- Your site allows anonymous read access
+- You're using local xDrip+ without authentication
+
+#### **Creating Nightscout Tokens:**
+
+To create authentication tokens for your Nightscout site, follow the [official Nightscout documentation](https://nightscout.github.io/nightscout/admin_tools/):
+
+1. **Access Admin Tools**: Click the settings panel (three horizontal bars) in your Nightscout website and select "Admin Tools"
+2. **Create Token**: Click "Add New Subject" and choose the appropriate role:
+   - **`readable`**: Read-only access (recommended for this app)
+   - **`careportal`**: Can view and make treatment entries
+   - **`admin`**: Full access
+3. **Copy Token**: Use the generated token string for authentication
+
+_Note: If you change your API_SECRET, all tokens will change and need to be updated._
 
 ### Nightscout API Sources
 
@@ -160,6 +197,7 @@ The app supports multiple Nightscout data sources:
 - **URL Format**: `https://yournightscout.com/api/v1/entries/sgv.json`
 - **Use Case**: Standard cloud-hosted Nightscout instances
 - **Requirements**: Internet connection, valid Nightscout URL
+- **Authentication**: Optional API token for secure access
 - **Example**: `https://mybloodglucose.herokuapp.com/api/v1/entries/sgv.json`
 
 #### 2. **Phone Local Broadcast via Hotspot**
@@ -189,6 +227,7 @@ The app provides convenient quick-fill buttons for common setups:
 
 - **Auto Refresh** - Enable automatic data updates
 - **Notifications** - Enable status notifications
+- **API Token** - Optional authentication token for Nightscout servers
 - **Restart App** - Apply configuration changes
 
 ---
@@ -357,11 +396,30 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 ## 🙏 Acknowledgments
 
-- **INFLITE TYPE ONE** - Inspiration from their [Karoo CGM project](https://github.com/haspden/TEAM-TYPE-ONE-STYLE-Karoo-CGM)
+- **Enhance-d Club UK** - Community support and inspiration for active living with type 1 diabetes
 - **CGM in the Cloud** - Community-driven diabetes technology
 - **xDrip+** - Open source diabetes management
 - **Hammerhead** - Karoo platform and extension framework
 - **Nightscout** - Open source CGM data platform
+
+## 💪 About Enhance-d Club UK
+
+**Enhance-d Club UK** is a not-for-profit community built by and for people living with type 1 diabetes who refuse to let it hold them back. From cyclists and runners to swimmers and weekend adventurers, we support each other to stay active, healthy, and connected.
+
+### Our Mission:
+
+- **💪 Empower** people with type 1 diabetes to live active, fulfilling lives
+- **🚴 Create safe spaces** to share experiences, challenges, and wins
+- **🤝 Build community** through meetups, events, and online support
+- **🌍 Break down barriers** to access, so everyone can enjoy the benefits of sport and activity
+
+### Support the Community:
+
+Your support helps us keep the community thriving – from hosting meetups, to creating resources, to backing initiatives that make active living with type 1 diabetes more accessible to all.
+
+**☕ Every coffee fuels community, connection, and action.**
+
+_Together, we're proving that diabetes doesn't define limits._
 
 ---
 

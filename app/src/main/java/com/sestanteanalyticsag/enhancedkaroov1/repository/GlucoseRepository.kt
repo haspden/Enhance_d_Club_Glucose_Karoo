@@ -11,6 +11,7 @@ import java.io.IOException
 class GlucoseRepository {
     private var apiService: GlucoseApiService? = null
     private var currentBaseUrl: String = ""
+    private var currentApiToken: String = ""
     
     private fun createApiService(fullUrl: String): GlucoseApiService {
         // Extract base URL from full URL
@@ -48,46 +49,61 @@ class GlucoseRepository {
         }
     }
     
+    fun updateApiToken(apiToken: String) {
+        currentApiToken = apiToken.trim()
+        println("GlucoseRepository: Updated API token (length: ${currentApiToken.length})")
+    }
+    
     private var cachedGlucoseEntry: GlucoseEntry? = null
     private var lastFetchTime: Long = 0
     
-               suspend fun getLatestGlucose(): Result<GlucoseEntry> = withContext(Dispatchers.IO) {
-               try {
-                   val service = apiService ?: throw IOException("API service not initialized. Please set a base URL.")
-                   println("GlucoseRepository: Fetching from API...")
-                   val entries = service.getGlucoseEntries()
-                   println("GlucoseRepository: Received ${entries.size} entries")
+    suspend fun getLatestGlucose(): Result<GlucoseEntry> = withContext(Dispatchers.IO) {
+        try {
+            val service = apiService ?: throw IOException("API service not initialized. Please set a base URL.")
+            println("GlucoseRepository: Fetching from API...")
+            
+            // Prepare authentication headers
+            val apiSecret = if (currentApiToken.isNotEmpty()) currentApiToken else null
+            val authorization = if (currentApiToken.isNotEmpty()) "Bearer $currentApiToken" else null
+            
+            val entries = service.getGlucoseEntries(apiSecret, authorization)
+            println("GlucoseRepository: Received ${entries.size} entries")
 
-                   if (entries.isNotEmpty()) {
-                       val latestEntry = entries.first()
-                       println("GlucoseRepository: Latest entry - SGV: ${latestEntry.sgv}, Direction: ${latestEntry.direction}")
-                       cachedGlucoseEntry = latestEntry
-                       lastFetchTime = System.currentTimeMillis()
-                       Result.success(latestEntry)
-                   } else {
-                       println("GlucoseRepository: No entries found")
-                       Result.failure(IOException("No glucose data available"))
-                   }
-               } catch (e: Exception) {
-                   println("GlucoseRepository: Exception occurred: ${e.message}")
-                   e.printStackTrace()
-                   Result.failure(e)
-               }
-           }
+            if (entries.isNotEmpty()) {
+                val latestEntry = entries.first()
+                println("GlucoseRepository: Latest entry - SGV: ${latestEntry.sgv}, Direction: ${latestEntry.direction}")
+                cachedGlucoseEntry = latestEntry
+                lastFetchTime = System.currentTimeMillis()
+                Result.success(latestEntry)
+            } else {
+                println("GlucoseRepository: No entries found")
+                Result.failure(IOException("No glucose data available"))
+            }
+        } catch (e: Exception) {
+            println("GlucoseRepository: Exception occurred: ${e.message}")
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
            
-           suspend fun getGlucoseEntries(): Result<List<GlucoseEntry>> = withContext(Dispatchers.IO) {
-               try {
-                   val service = apiService ?: throw IOException("API service not initialized. Please set a base URL.")
-                   println("GlucoseRepository: Fetching entries from API...")
-                   val entries = service.getGlucoseEntries()
-                   println("GlucoseRepository: Received ${entries.size} entries")
-                   Result.success(entries)
-               } catch (e: Exception) {
-                   println("GlucoseRepository: Exception occurred: ${e.message}")
-                   e.printStackTrace()
-                   Result.failure(e)
-               }
-           }
+    suspend fun getGlucoseEntries(): Result<List<GlucoseEntry>> = withContext(Dispatchers.IO) {
+        try {
+            val service = apiService ?: throw IOException("API service not initialized. Please set a base URL.")
+            println("GlucoseRepository: Fetching entries from API...")
+            
+            // Prepare authentication headers
+            val apiSecret = if (currentApiToken.isNotEmpty()) currentApiToken else null
+            val authorization = if (currentApiToken.isNotEmpty()) "Bearer $currentApiToken" else null
+            
+            val entries = service.getGlucoseEntries(apiSecret, authorization)
+            println("GlucoseRepository: Received ${entries.size} entries")
+            Result.success(entries)
+        } catch (e: Exception) {
+            println("GlucoseRepository: Exception occurred: ${e.message}")
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
     
     fun getCachedGlucose(): GlucoseEntry? = cachedGlucoseEntry
     

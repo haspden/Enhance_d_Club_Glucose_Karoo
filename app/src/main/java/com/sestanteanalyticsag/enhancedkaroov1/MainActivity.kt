@@ -114,9 +114,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         
-        // Initialize repository with stored URL
+        // Initialize repository with stored URL and API token
         val currentUrl = getStoredUrl()
+        val currentApiToken = getStoredApiToken()
         glucoseRepository.updateBaseUrl(currentUrl)
+        glucoseRepository.updateApiToken(currentApiToken)
     }
     
     private fun setupKarooConnection() {
@@ -212,6 +214,11 @@ class MainActivity : AppCompatActivity() {
     private fun getStoredUrl(): String {
         val prefs = getSharedPreferences("GlucoseDataFieldPrefs", MODE_PRIVATE)
         return prefs.getString("nightscout_url", "http://127.0.0.1:17580/sgv.json") ?: "http://127.0.0.1:17580/sgv.json"
+    }
+    
+    private fun getStoredApiToken(): String {
+        val prefs = getSharedPreferences("GlucoseDataFieldPrefs", MODE_PRIVATE)
+        return prefs.getString("api_token", "") ?: ""
     }
     
 
