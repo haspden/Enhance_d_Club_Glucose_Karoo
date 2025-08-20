@@ -384,7 +384,7 @@ We welcome contributions! Please:
 ### Contact Information
 
 - **GitHub**: [Repository Issues](https://github.com/henryaspden/Enhance_d_Club_Glucose_Karoo/issues)
-- **Email**: [Your contact email]
+- **Email**: uk@club.enhance-d.com
 
 ---
 

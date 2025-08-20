@@ -69,6 +69,7 @@
 ## 📞 Support
 
 - **GitHub Issues**: Report bugs and request features
+- **Email**: uk@club.enhance-d.com
 - **Documentation**: Check README.md for detailed instructions
 
 ---

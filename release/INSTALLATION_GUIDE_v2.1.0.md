@@ -88,6 +88,7 @@ Follow the [official Nightscout documentation](https://nightscout.github.io/nigh
 
 - Check the full [README.md](../README.md) for detailed instructions
 - Report issues on [GitHub](https://github.com/henryaspden/Enhance_d_Club_Glucose_Karoo/issues)
+- Contact us at uk@club.enhance-d.com
 
 ---
 

@@ -188,6 +188,7 @@ This app is for **informational purposes only**. It is NOT intended for:
 ## 📞 Support
 
 - **GitHub Issues**: [Report bugs and request features](https://github.com/henryaspden/Enhance_d_Club_Glucose_Karoo/issues)
+- **Email**: uk@club.enhance-d.com
 - **Documentation**: Check the README.md file for detailed setup instructions
 
 ## 🙏 Acknowledgments
