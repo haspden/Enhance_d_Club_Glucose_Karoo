@@ -6,10 +6,14 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.sestanteanalyticsag.enhancedkaroov1.databinding.ActivityMainBinding
 import com.sestanteanalyticsag.enhancedkaroov1.repository.GlucoseRepository
+import com.sestanteanalyticsag.enhancedkaroov1.util.UpdateChecker
+import com.sestanteanalyticsag.enhancedkaroov1.util.UpdateResult
+import com.sestanteanalyticsag.enhancedkaroov1.util.DownloadResult
 import io.hammerhead.karooext.KarooSystemService
 import io.hammerhead.karooext.models.RideState
 import kotlinx.coroutines.delay
@@ -45,6 +49,12 @@ class MainActivity : AppCompatActivity() {
         setupUI()
         setupKarooConnection()
         startGlucoseMonitoring()
+        
+        // Check for updates after a short delay to let the app fully load
+        lifecycleScope.launch {
+            delay(2000) // 2 second delay
+            checkForUpdatesOnStartup()
+        }
     }
     
     private fun showMedicalDisclaimer() {
@@ -222,6 +232,135 @@ class MainActivity : AppCompatActivity() {
     }
     
 
+    
+    private fun checkForUpdatesOnStartup() {
+        // Only check for updates once per app session to avoid annoying users
+        if (isUpdateCheckAlreadyDone()) {
+            return
+        }
+        
+        val updateChecker = UpdateChecker(this)
+        
+        lifecycleScope.launch {
+            try {
+                val result = updateChecker.checkForUpdates()
+                
+                when (result) {
+                    is UpdateResult.UpdateAvailable -> {
+                        showUpdateAvailableDialog(result, updateChecker)
+                    }
+                    is UpdateResult.UpToDate -> {
+                        // Silently log that we're up to date
+                        Log.d(TAG, "App is up to date (${result.version})")
+                    }
+                    is UpdateResult.Error -> {
+                        // Silently log errors to avoid annoying users
+                        Log.w(TAG, "Update check failed: ${result.message}")
+                    }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Exception during update check", e)
+            }
+        }
+    }
+    
+    private fun showUpdateAvailableDialog(updateResult: UpdateResult.UpdateAvailable, updateChecker: UpdateChecker) {
+        val fileSizeMB = updateResult.fileSize / (1024 * 1024)
+        
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("🔄 Update Available")
+            .setMessage("""
+                A new version of Enhance-d Club Glucose is available!
+                
+                Current: ${updateResult.currentVersion}
+                New: ${updateResult.newVersion}
+                Size: ${fileSizeMB}MB
+                
+                ${updateResult.releaseNotes.take(150)}${if (updateResult.releaseNotes.length > 150) "..." else ""}
+                
+                Would you like to update now?
+            """.trimIndent())
+            .setPositiveButton("Update Now") { _, _ ->
+                downloadAndInstallUpdate(updateResult, updateChecker)
+            }
+            .setNegativeButton("Later") { _, _ ->
+                // Mark that we've shown the update dialog for this session
+                markUpdateCheckDone()
+            }
+            .setNeutralButton("View Full Notes") { _, _ ->
+                showFullReleaseNotes(updateResult.releaseNotes)
+            }
+            .setCancelable(false) // Prevent dismissing by tapping outside
+            .create()
+        
+        dialog.show()
+    }
+    
+    private fun downloadAndInstallUpdate(updateResult: UpdateResult.UpdateAvailable, updateChecker: UpdateChecker) {
+        val progressDialog = AlertDialog.Builder(this)
+            .setTitle("Downloading Update")
+            .setMessage("Downloading version ${updateResult.newVersion}...")
+            .setCancelable(false)
+            .create()
+        progressDialog.show()
+        
+        lifecycleScope.launch {
+            try {
+                val downloadResult = updateChecker.downloadUpdate(updateResult.downloadUrl)
+                
+                progressDialog.dismiss()
+                
+                when (downloadResult) {
+                    is DownloadResult.Success -> {
+                        try {
+                            updateChecker.installUpdate(downloadResult.apkFile)
+                            Toast.makeText(this@MainActivity, "Installation started", Toast.LENGTH_SHORT).show()
+                            // Mark update check as done since we're installing
+                            markUpdateCheckDone()
+                        } catch (e: Exception) {
+                            AlertDialog.Builder(this@MainActivity)
+                                .setTitle("Installation Failed")
+                                .setMessage("Error: ${e.message}")
+                                .setPositiveButton("OK", null)
+                                .show()
+                        }
+                    }
+                    is DownloadResult.Error -> {
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle("Download Failed")
+                            .setMessage("Error: ${downloadResult.message}")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                }
+            } catch (e: Exception) {
+                progressDialog.dismiss()
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle("Download Failed")
+                    .setMessage("Exception: ${e.message}")
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        }
+    }
+    
+    private fun showFullReleaseNotes(releaseNotes: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Release Notes")
+            .setMessage(releaseNotes)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+    
+    private fun isUpdateCheckAlreadyDone(): Boolean {
+        val prefs = getSharedPreferences("GlucoseDataFieldPrefs", MODE_PRIVATE)
+        return prefs.getBoolean("update_check_done_${Constants.APP_VERSION}", false)
+    }
+    
+    private fun markUpdateCheckDone() {
+        val prefs = getSharedPreferences("GlucoseDataFieldPrefs", MODE_PRIVATE)
+        prefs.edit().putBoolean("update_check_done_${Constants.APP_VERSION}", true).apply()
+    }
     
     override fun onDestroy() {
         consumerId?.let { karooSystem.removeConsumer(it) }

@@ -8,7 +8,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.sestanteanalyticsag.enhancedkaroov1.databinding.ActivitySettingsBinding
+import com.sestanteanalyticsag.enhancedkaroov1.util.UpdateChecker
+import com.sestanteanalyticsag.enhancedkaroov1.util.UpdateResult
+import com.sestanteanalyticsag.enhancedkaroov1.util.DownloadResult
+import kotlinx.coroutines.launch
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
@@ -63,6 +68,11 @@ class SettingsActivity : AppCompatActivity() {
         // Set up view disclaimer button
         binding.btnViewDisclaimer.setOnClickListener {
             showMedicalDisclaimer()
+        }
+        
+        // Set up check for updates button
+        binding.btnCheckForUpdates.setOnClickListener {
+            checkForUpdates()
         }
         
         // Set up other settings with persistence
@@ -297,6 +307,135 @@ class SettingsActivity : AppCompatActivity() {
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }
+            .show()
+    }
+    
+    private fun checkForUpdates() {
+        val updateChecker = UpdateChecker(this)
+        
+        // Show checking dialog
+        val checkingDialog = AlertDialog.Builder(this)
+            .setTitle("Checking for Updates")
+            .setMessage("Checking GitHub for new versions...")
+            .setCancelable(false)
+            .create()
+        checkingDialog.show()
+        
+        lifecycleScope.launch {
+            try {
+                val result = updateChecker.checkForUpdates()
+                
+                checkingDialog.dismiss()
+                
+                when (result) {
+                    is UpdateResult.UpdateAvailable -> {
+                        showUpdateAvailableDialog(result, updateChecker)
+                    }
+                    is UpdateResult.UpToDate -> {
+                        AlertDialog.Builder(this@SettingsActivity)
+                            .setTitle("Up to Date")
+                            .setMessage("You are running the latest version (${result.version})")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                    is UpdateResult.Error -> {
+                        AlertDialog.Builder(this@SettingsActivity)
+                            .setTitle("Update Check Failed")
+                            .setMessage("Error: ${result.message}")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                }
+            } catch (e: Exception) {
+                checkingDialog.dismiss()
+                AlertDialog.Builder(this@SettingsActivity)
+                    .setTitle("Update Check Failed")
+                    .setMessage("Exception: ${e.message}")
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        }
+    }
+    
+    private fun showUpdateAvailableDialog(updateResult: UpdateResult.UpdateAvailable, updateChecker: UpdateChecker) {
+        val fileSizeMB = updateResult.fileSize / (1024 * 1024)
+        
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("Update Available")
+            .setMessage("""
+                New version available!
+                
+                Current: ${updateResult.currentVersion}
+                New: ${updateResult.newVersion}
+                Size: ${fileSizeMB}MB
+                
+                ${updateResult.releaseNotes.take(200)}${if (updateResult.releaseNotes.length > 200) "..." else ""}
+                
+                Would you like to download and install this update?
+            """.trimIndent())
+            .setPositiveButton("Download & Install") { _, _ ->
+                downloadAndInstallUpdate(updateResult, updateChecker)
+            }
+            .setNegativeButton("Later", null)
+            .setNeutralButton("View Full Release Notes") { _, _ ->
+                showFullReleaseNotes(updateResult.releaseNotes)
+            }
+            .create()
+        
+        dialog.show()
+    }
+    
+    private fun downloadAndInstallUpdate(updateResult: UpdateResult.UpdateAvailable, updateChecker: UpdateChecker) {
+        val progressDialog = AlertDialog.Builder(this)
+            .setTitle("Downloading Update")
+            .setMessage("Downloading version ${updateResult.newVersion}...")
+            .setCancelable(false)
+            .create()
+        progressDialog.show()
+        
+        lifecycleScope.launch {
+            try {
+                val downloadResult = updateChecker.downloadUpdate(updateResult.downloadUrl)
+                
+                progressDialog.dismiss()
+                
+                when (downloadResult) {
+                    is DownloadResult.Success -> {
+                        try {
+                            updateChecker.installUpdate(downloadResult.apkFile)
+                            Toast.makeText(this@SettingsActivity, "Installation started", Toast.LENGTH_SHORT).show()
+                        } catch (e: Exception) {
+                            AlertDialog.Builder(this@SettingsActivity)
+                                .setTitle("Installation Failed")
+                                .setMessage("Error: ${e.message}")
+                                .setPositiveButton("OK", null)
+                                .show()
+                        }
+                    }
+                    is DownloadResult.Error -> {
+                        AlertDialog.Builder(this@SettingsActivity)
+                            .setTitle("Download Failed")
+                            .setMessage("Error: ${downloadResult.message}")
+                            .setPositiveButton("OK", null)
+                            .show()
+                    }
+                }
+            } catch (e: Exception) {
+                progressDialog.dismiss()
+                AlertDialog.Builder(this@SettingsActivity)
+                    .setTitle("Download Failed")
+                    .setMessage("Exception: ${e.message}")
+                    .setPositiveButton("OK", null)
+                    .show()
+            }
+        }
+    }
+    
+    private fun showFullReleaseNotes(releaseNotes: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Release Notes")
+            .setMessage(releaseNotes)
+            .setPositiveButton("OK", null)
             .show()
     }
     

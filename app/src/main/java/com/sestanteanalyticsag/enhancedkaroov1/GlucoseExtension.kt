@@ -27,10 +27,16 @@ class GlucoseExtension : KarooExtension("enhanced_glucose", "1.0.0") {
         super.onCreate()
         println("$TAG: Service created!")
         
-        // Initialize repository with default URL
+        // Initialize repository with stored URL and API token
         try {
-            glucoseRepository.updateBaseUrl("http://127.0.0.1:17580/sgv.json")
-            println("$TAG: Repository initialized with default URL")
+            val context = applicationContext
+            val prefs = context.getSharedPreferences("GlucoseDataFieldPrefs", Context.MODE_PRIVATE)
+            val storedUrl = prefs.getString("nightscout_url", "http://127.0.0.1:17580/sgv.json") ?: "http://127.0.0.1:17580/sgv.json"
+            val storedApiToken = prefs.getString("api_token", "") ?: ""
+            
+            glucoseRepository.updateBaseUrl(storedUrl)
+            glucoseRepository.updateApiToken(storedApiToken)
+            println("$TAG: Repository initialized with URL: $storedUrl and API token: ${if (storedApiToken.isNotEmpty()) "***" else "none"}")
         } catch (e: Exception) {
             println("$TAG: Error initializing repository: ${e.message}")
         }
