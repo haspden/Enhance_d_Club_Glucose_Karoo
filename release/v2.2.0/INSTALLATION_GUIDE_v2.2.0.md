@@ -105,5 +105,5 @@
 
 **File Size**: See APK details  
 **Version**: 2.2.0  
-**Release Date**: August 20, 2025  
+**Release Date**: August 27, 2025  
 **Requires**: Android 7.0+ (API 24)

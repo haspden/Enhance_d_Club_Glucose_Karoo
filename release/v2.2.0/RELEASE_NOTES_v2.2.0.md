@@ -249,7 +249,7 @@ _Together, we're proving that diabetes doesn't define limits._
 ---
 
 **Version**: 2.2.0  
-**Release Date**: August 20, 2025  
+**Release Date**: August 27, 2025  
 **File**: `Enhance-d_Club_Glucose_Karoo_v2.2.0.apk`  
 **Size**: See file details below
 
