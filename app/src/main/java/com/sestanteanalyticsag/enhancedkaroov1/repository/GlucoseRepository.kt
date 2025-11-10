@@ -26,26 +26,34 @@ class GlucoseRepository {
     }
     
     private fun extractBaseUrl(fullUrl: String): String {
+        println("GlucoseRepository: Extracting base URL from: '$fullUrl'")
         return try {
             val url = java.net.URL(fullUrl)
             val baseUrl = "${url.protocol}://${url.host}"
-            if (url.port != -1) {
+            val finalBaseUrl = if (url.port != -1) {
                 "$baseUrl:${url.port}"
             } else {
                 baseUrl
             } + "/"
+            println("GlucoseRepository: Successfully extracted base URL: '$finalBaseUrl'")
+            finalBaseUrl
         } catch (e: Exception) {
-            println("GlucoseRepository: Error extracting base URL from $fullUrl: ${e.message}")
-            // Fallback to default
-            "https://haspdenbloodglucose.herokuapp.com/"
+            println("GlucoseRepository: Error extracting base URL from '$fullUrl': ${e.message}")
+            println("GlucoseRepository: Falling back to localhost URL")
+            // Fallback to localhost instead of unreachable Heroku
+            "http://127.0.0.1:17580/"
         }
     }
     
     fun updateBaseUrl(fullUrl: String) {
+        println("GlucoseRepository: updateBaseUrl called with: '$fullUrl'")
+        println("GlucoseRepository: currentBaseUrl is: '$currentBaseUrl'")
         if (currentBaseUrl != fullUrl) {
             currentBaseUrl = fullUrl
             apiService = createApiService(fullUrl)
-            println("GlucoseRepository: Updated full URL to: $fullUrl")
+            println("GlucoseRepository: Updated full URL to: '$fullUrl'")
+        } else {
+            println("GlucoseRepository: URL unchanged, keeping existing service")
         }
     }
     
@@ -71,9 +79,13 @@ class GlucoseRepository {
 
             if (entries.isNotEmpty()) {
                 val latestEntry = entries.first()
+                val currentTime = System.currentTimeMillis()
+                val timeSince = (currentTime - latestEntry.date) / 1000.0
                 println("GlucoseRepository: Latest entry - SGV: ${latestEntry.sgv}, Direction: ${latestEntry.direction}")
+                println("GlucoseRepository: Entry timestamp: ${latestEntry.date}, Current time: $currentTime")
+                println("GlucoseRepository: Time since entry: ${timeSince} seconds")
                 cachedGlucoseEntry = latestEntry
-                lastFetchTime = System.currentTimeMillis()
+                lastFetchTime = currentTime
                 Result.success(latestEntry)
             } else {
                 println("GlucoseRepository: No entries found")

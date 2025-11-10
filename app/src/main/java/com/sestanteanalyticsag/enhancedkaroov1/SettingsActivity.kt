@@ -60,6 +60,11 @@ class SettingsActivity : AppCompatActivity() {
             showApiTokenConfigurationDialog()
         }
         
+        // Set up reset URL button
+        binding.btnResetUrl.setOnClickListener {
+            resetToDefaultUrl()
+        }
+        
         // Set up restart app button
         binding.btnRestartApp.setOnClickListener {
             restartApp()
@@ -237,6 +242,19 @@ class SettingsActivity : AppCompatActivity() {
     private fun saveApiToken(token: String) {
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_API_TOKEN, token).apply()
+    }
+    
+    private fun resetToDefaultUrl() {
+        AlertDialog.Builder(this)
+            .setTitle("Reset URL")
+            .setMessage("This will reset the Nightscout URL to the default localhost URL (http://127.0.0.1:17580/sgv.json). This is useful if you're having connection issues with a remote server.")
+            .setPositiveButton("Reset") { _, _ ->
+                saveUrl(DEFAULT_URL)
+                binding.tvCurrentUrl.text = DEFAULT_URL
+                Toast.makeText(this, "URL reset to default", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
     
     private fun getStoredAutoRefresh(): Boolean {

@@ -64,6 +64,17 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- Broadcast receiver to notify Karoo about extension -->
+        <receiver
+            android:name=".ExtensionBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

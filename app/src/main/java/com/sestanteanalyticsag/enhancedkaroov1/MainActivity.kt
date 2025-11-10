@@ -145,6 +145,22 @@ class MainActivity : AppCompatActivity() {
                     binding.tvRideState.text = "Ride State: $rideState"
                 }
             }
+            
+            // Try to start the extension service
+            startExtensionService()
+        }
+    }
+    
+    private fun startExtensionService() {
+        try {
+            Log.d(TAG, "Attempting to start extension service...")
+            val intent = Intent("io.hammerhead.karooext.KAROO_EXTENSION")
+            intent.setPackage(packageName)
+            intent.setClassName(packageName, "$packageName.GlucoseExtension")
+            startService(intent)
+            Log.d(TAG, "Extension service start intent sent")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting extension service", e)
         }
     }
     
@@ -164,6 +180,8 @@ class MainActivity : AppCompatActivity() {
             result.fold(
                 onSuccess = { glucoseEntry ->
                     Log.d(TAG, "Glucose: ${glucoseEntry.getGlucoseValue()} mg/dl, Direction: ${glucoseEntry.getDirectionArrow()}")
+        Log.d(TAG, "Raw glucose value: ${glucoseEntry.getGlucoseValue()} mg/dl, converted to: ${glucoseEntry.getGlucoseValue() / 18.0} mmol/L")
+        Log.d(TAG, "Data timestamp: ${glucoseEntry.date}")
                     runOnUiThread {
                         updateGlucoseDisplay(glucoseEntry)
                     }

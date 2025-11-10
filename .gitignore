@@ -161,3 +161,4 @@ GoogleService-Info.plist
 
 # App signing
 app/signing.properties
+gradle.properties

@@ -12,11 +12,14 @@ import io.hammerhead.karooext.models.DataPoint
 import io.hammerhead.karooext.models.DataType
 import io.hammerhead.karooext.models.StreamState
 import io.hammerhead.karooext.models.UpdateGraphicConfig
+import io.hammerhead.karooext.models.UpdateNumericConfig
 import io.hammerhead.karooext.models.ViewConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.awaitCancellation
 import java.text.SimpleDateFormat
+import java.text.DecimalFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class GlucoseExtension : KarooExtension("enhanced_glucose", "1.0.0") {
     
@@ -72,7 +75,7 @@ class GlucoseExtension : KarooExtension("enhanced_glucose", "1.0.0") {
 class GlucoseDataType(
     private val scope: CoroutineScope,
     private val glucoseRepository: GlucoseRepository
-) : DataTypeImpl("enhanced_glucose", "glucose") {
+) : DataTypeImpl("enhanced_glucose", "glucose_mg") {
     
     companion object {
         private const val TAG = "GlucoseDataType"
@@ -94,16 +97,21 @@ class GlucoseDataType(
                     val result = glucoseRepository.getLatestGlucose()
                     result.fold(
                         onSuccess = { glucoseEntry ->
-                            val glucoseValue = glucoseEntry.getGlucoseValue()
-                            println("$TAG: Publishing glucose data: $glucoseValue mg/dl")
-                            
-                            val dataPoint = DataPoint(
-                                dataTypeId = dataTypeId,
-                                values = mapOf(DataType.Field.SINGLE to glucoseValue.toDouble())
-                            )
-                            
-                            println("$TAG: Emitting StreamState.Streaming with value: $glucoseValue")
-                            emitter.onNext(StreamState.Streaming(dataPoint))
+                            if (GlucoseUtils.isDataStale(glucoseEntry)) {
+                                println("$TAG: Data is stale, emitting NotAvailable")
+                                emitter.onNext(StreamState.NotAvailable)
+                            } else {
+                                val glucoseValue = glucoseEntry.getGlucoseValue()
+                                println("$TAG: Publishing glucose data: $glucoseValue mg/dl")
+                                
+                                val dataPoint = DataPoint(
+                                    dataTypeId = dataTypeId,
+                                    values = mapOf(DataType.Field.SINGLE to glucoseValue.toDouble())
+                                )
+                                
+                                println("$TAG: Emitting StreamState.Streaming with value: $glucoseValue")
+                                emitter.onNext(StreamState.Streaming(dataPoint))
+                            }
                         },
                         onFailure = { exception ->
                             println("$TAG: Error fetching glucose: ${exception.message}")
@@ -580,23 +588,25 @@ class GlucoseMmolDataType(
                     val result = glucoseRepository.getLatestGlucose()
                     result.fold(
                         onSuccess = { glucoseEntry ->
-                            val glucoseValueMgdl = glucoseEntry.getGlucoseValue()
-                            val glucoseValueMmol = glucoseValueMgdl / MGDL_TO_MMOL_CONVERSION
-                            // Force decimal display by adding a tiny fractional part to whole numbers
-                            val formattedMmol = if (glucoseValueMmol == glucoseValueMmol.toInt().toDouble()) {
-                                glucoseValueMmol + 0.001 // Add tiny decimal to force display
+                            if (GlucoseUtils.isDataStale(glucoseEntry)) {
+                                println("$TAG: Data is stale, emitting NotAvailable")
+                                emitter.onNext(StreamState.NotAvailable)
                             } else {
-                                glucoseValueMmol
+                                val glucoseValueMgdl = glucoseEntry.getGlucoseValue()
+                                val glucoseValueMmol = glucoseValueMgdl / MGDL_TO_MMOL_CONVERSION
+                                // Format to exactly 1 decimal place as string, then convert to double
+                                val formattedString = String.format("%.1f", glucoseValueMmol)
+                                val displayValue = formattedString.toDouble()
+                                println("$TAG: Raw mg/dL: $glucoseValueMgdl, Raw mmol/L: $glucoseValueMmol, Formatted: $formattedString, Display: $displayValue")
+                                
+                                val dataPoint = DataPoint(
+                                    dataTypeId = dataTypeId,
+                                    values = mapOf(DataType.Field.SINGLE to displayValue)
+                                )
+                                
+                                println("$TAG: Emitting StreamState.Streaming with value: $displayValue")
+                                emitter.onNext(StreamState.Streaming(dataPoint))
                             }
-                            println("$TAG: Publishing glucose data: $formattedMmol mmol/L (from $glucoseValueMgdl mg/dl)")
-                            
-                            val dataPoint = DataPoint(
-                                dataTypeId = dataTypeId,
-                                values = mapOf(DataType.Field.SINGLE to formattedMmol)
-                            )
-                            
-                            println("$TAG: Emitting StreamState.Streaming with value: $formattedMmol")
-                            emitter.onNext(StreamState.Streaming(dataPoint))
                         },
                         onFailure = { exception ->
                             println("$TAG: Error fetching glucose: ${exception.message}")
@@ -619,15 +629,7 @@ class GlucoseMmolDataType(
         }
     }
     
-    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
-        println("$TAG: Starting mmol view with config $config")
-        val configJob = CoroutineScope(Dispatchers.IO).launch {
-            // Use a format that supports decimal display
-            emitter.onNext(UpdateGraphicConfig(formatDataTypeId = DataType.Type.SPEED))
-            awaitCancellation()
-        }
-        emitter.setCancellable {
-            configJob.cancel()
-        }
-    }
+    // No startView implementation - uses standard numeric view
 }
+
+
