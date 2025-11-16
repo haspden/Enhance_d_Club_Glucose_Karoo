@@ -1,6 +1,16 @@
 package com.sestanteanalyticsag.enhancedkaroov1
 
 import android.content.Context
+import android.widget.RemoteViews
+import com.sestanteanalyticsag.enhancedkaroov1.R
+import com.sestanteanalyticsag.enhancedkaroov1.Combo1MgDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo1MmolDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo2MgDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo2MmolDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo3MgDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo3MmolDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo4MgDataType
+import com.sestanteanalyticsag.enhancedkaroov1.Combo4MmolDataType
 import com.sestanteanalyticsag.enhancedkaroov1.data.GlucoseEntry
 import com.sestanteanalyticsag.enhancedkaroov1.repository.GlucoseRepository
 import com.sestanteanalyticsag.enhancedkaroov1.util.GlucoseUtils
@@ -60,7 +70,15 @@ class GlucoseExtension : KarooExtension("enhanced_glucose", "1.0.0") {
             Delta15mMgDataType(extensionScope, glucoseRepository),
             Delta15mMmolDataType(extensionScope, glucoseRepository),
             Delta5mMgDataType(extensionScope, glucoseRepository),
-            Delta5mMmolDataType(extensionScope, glucoseRepository)
+            Delta5mMmolDataType(extensionScope, glucoseRepository),
+            Combo1MgDataType(extensionScope, glucoseRepository),
+            Combo1MmolDataType(extensionScope, glucoseRepository),
+            Combo2MgDataType(extensionScope, glucoseRepository),
+            Combo2MmolDataType(extensionScope, glucoseRepository),
+            Combo3MgDataType(extensionScope, glucoseRepository),
+            Combo3MmolDataType(extensionScope, glucoseRepository),
+            Combo4MgDataType(extensionScope, glucoseRepository),
+            Combo4MmolDataType(extensionScope, glucoseRepository)
         )
     }
     
@@ -268,20 +286,13 @@ class DirectionArrowDataType(
                                 emitter.onNext(StreamState.NotAvailable)
                             } else {
                                 val direction = glucoseEntry.getDirectionArrow()
-                                // Convert direction to numeric for display
-                                val directionValue = when (direction) {
-                                    "↑↑" -> 7.0
-                                    "↑" -> 6.0
-                                    "↗" -> 5.0
-                                    "→" -> 4.0
-                                    "↘" -> 3.0
-                                    "↓" -> 2.0
-                                    "↓↓" -> 1.0
-                                    else -> 0.0
-                                }
+                                // Store direction as string in a custom field for RemoteViews
                                 val dataPoint = DataPoint(
                                     dataTypeId = dataTypeId,
-                                    values = mapOf(DataType.Field.SINGLE to directionValue)
+                                    values = mapOf(
+                                        DataType.Field.SINGLE to 0.0, // Dummy value for compatibility
+                                        // We'll use the direction string in the view
+                                    )
                                 )
                                 emitter.onNext(StreamState.Streaming(dataPoint))
                             }
@@ -302,6 +313,76 @@ class DirectionArrowDataType(
         
         emitter.setCancellable {
             job.cancel()
+        }
+    }
+    
+    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
+        println("$TAG: Starting direction arrow view with config $config")
+        val remoteViews = RemoteViews(context.packageName, R.layout.direction_arrow_view)
+        
+        // Send initial RemoteViews using updateView method
+        try {
+            emitter.updateView(remoteViews)
+            println("$TAG: Initial RemoteViews sent")
+        } catch (e: Exception) {
+            println("$TAG: Error sending initial RemoteViews: ${e.message}")
+            e.printStackTrace()
+        }
+        
+        val viewJob = scope.launch {
+            delay(1000) // Initial delay
+            
+            while (isActive) {
+                try {
+                    val result = glucoseRepository.getLatestGlucose()
+                    result.fold(
+                        onSuccess = { glucoseEntry ->
+                            if (!GlucoseUtils.isDataStale(glucoseEntry)) {
+                                val direction = glucoseEntry.getDirectionArrow()
+                                println("$TAG: Updating view with direction: $direction")
+                                remoteViews.setTextViewText(R.id.direction_text, direction)
+                                try {
+                                    emitter.updateView(remoteViews)
+                                } catch (e: Exception) {
+                                    println("$TAG: Error updating RemoteViews: ${e.message}")
+                                    e.printStackTrace()
+                                }
+                            } else {
+                                remoteViews.setTextViewText(R.id.direction_text, "--")
+                                try {
+                                    emitter.updateView(remoteViews)
+                                } catch (e: Exception) {
+                                    println("$TAG: Error updating RemoteViews: ${e.message}")
+                                    e.printStackTrace()
+                                }
+                            }
+                        },
+                        onFailure = { exception ->
+                            println("$TAG: Error updating view: ${exception.message}")
+                            remoteViews.setTextViewText(R.id.direction_text, "--")
+                            try {
+                                emitter.updateView(remoteViews)
+                            } catch (e: Exception) {
+                                println("$TAG: Error updating RemoteViews: ${e.message}")
+                            }
+                        }
+                    )
+                } catch (e: Exception) {
+                    println("$TAG: Exception updating view: ${e.message}")
+                    remoteViews.setTextViewText(R.id.direction_text, "--")
+                    try {
+                        emitter.updateView(remoteViews)
+                    } catch (e: Exception) {
+                        println("$TAG: Error updating RemoteViews: ${e.message}")
+                    }
+                }
+                
+                delay(REFRESH_INTERVAL)
+            }
+        }
+        
+        emitter.setCancellable {
+            viewJob.cancel()
         }
     }
 }
@@ -570,7 +651,7 @@ class GlucoseMmolDataType(
     companion object {
         private const val TAG = "GlucoseMmolDataType"
         private const val REFRESH_INTERVAL = 1000L // 1 second for UI updates
-        private const val MGDL_TO_MMOL_CONVERSION = 18.0
+        private const val MGDL_TO_MMOL_CONVERSION = 18.0182
     }
     
     override fun startStream(emitter: Emitter<StreamState>) {
@@ -593,18 +674,15 @@ class GlucoseMmolDataType(
                                 emitter.onNext(StreamState.NotAvailable)
                             } else {
                                 val glucoseValueMgdl = glucoseEntry.getGlucoseValue()
-                                val glucoseValueMmol = glucoseValueMgdl / MGDL_TO_MMOL_CONVERSION
-                                // Format to exactly 1 decimal place as string, then convert to double
-                                val formattedString = String.format("%.1f", glucoseValueMmol)
-                                val displayValue = formattedString.toDouble()
-                                println("$TAG: Raw mg/dL: $glucoseValueMgdl, Raw mmol/L: $glucoseValueMmol, Formatted: $formattedString, Display: $displayValue")
+                                val glucoseValueMmol = (glucoseValueMgdl / MGDL_TO_MMOL_CONVERSION * 10.0).roundToInt() / 10.0
+                                println("$TAG: Raw mg/dL: $glucoseValueMgdl, Raw mmol/L: $glucoseValueMmol")
                                 
                                 val dataPoint = DataPoint(
                                     dataTypeId = dataTypeId,
-                                    values = mapOf(DataType.Field.SINGLE to displayValue)
+                                    values = mapOf(DataType.Field.SINGLE to glucoseValueMmol)
                                 )
                                 
-                                println("$TAG: Emitting StreamState.Streaming with value: $displayValue")
+                                println("$TAG: Emitting StreamState.Streaming with value: $glucoseValueMmol")
                                 emitter.onNext(StreamState.Streaming(dataPoint))
                             }
                         },
@@ -629,7 +707,17 @@ class GlucoseMmolDataType(
         }
     }
     
-    // No startView implementation - uses standard numeric view
+    override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
+        println("$TAG: Starting mmol view with config $config")
+        val configJob = CoroutineScope(Dispatchers.IO).launch {
+            // Try CORE_TEMP which should provide 1 decimal precision for body-related values
+            emitter.onNext(UpdateNumericConfig(formatDataTypeId = DataType.Type.ELEVATION_GRADE))
+            awaitCancellation()
+        }
+        emitter.setCancellable {
+            configJob.cancel()
+        }
+    }
 }
 
 

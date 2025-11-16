@@ -12,27 +12,116 @@
         graphical="false"
         icon="@mipmap/ic_launcher" />
         
-                    <DataType
-                    typeId="glucose_mmol"
-                    description="Blood glucose in mmol/L"
-                    displayName="Glu. mmol"
-                    graphical="false"
-                    icon="@mipmap/ic_launcher" />
-
-
+    <DataType
+        typeId="glucose_mmol"
+        description="Blood glucose in mmol/L"
+        displayName="Glu. mmol"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
 
     <DataType
-        typeId="time_since_seconds"
+        typeId="time_since"
         description="Time since last reading in seconds"
         displayName="Time (s)"
         graphical="false"
         icon="@mipmap/ic_launcher" />
 
     <DataType
-        typeId="time_since_minutes"
-        description="Time since last reading in minutes"
-        displayName="Time (min)"
+        typeId="time_since_formatted"
+        description="Time since last reading (formatted)"
+        displayName="Time (m)"
         graphical="false"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="direction_arrow"
+        description="Glucose trend direction"
+        displayName="Direction"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="delta_15m_mg"
+        description="15-minute glucose change in mg/dL"
+        displayName="15m Δ mg"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="delta_15m_mmol"
+        description="15-minute glucose change in mmol/L"
+        displayName="15m Δ mmol"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="delta_5m_mg"
+        description="5-minute glucose change in mg/dL"
+        displayName="5m Δ mg"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="delta_5m_mmol"
+        description="5-minute glucose change in mmol/L"
+        displayName="5m Δ mmol"
+        graphical="false"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_1_mg"
+        description="Left: Time since (s) and 15m delta with arrow. Right: Glucose value (mg/dL)"
+        displayName="Combo 1 mg"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_1_mmol"
+        description="Left: Time since (s) and 15m delta with arrow. Right: Glucose value (mmol/L)"
+        displayName="Combo 1 mmol"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_2_mg"
+        description="Left: Time since (s) and 5m delta with arrow. Right: Glucose value (mg/dL)"
+        displayName="Combo 2 mg"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_2_mmol"
+        description="Left: Time since (s) and 5m delta with arrow. Right: Glucose value (mmol/L)"
+        displayName="Combo 2 mmol"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_3_mg"
+        description="Left: Time since (m) and 15m delta with arrow. Right: Glucose value (mg/dL)"
+        displayName="Combo 3 mg"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_3_mmol"
+        description="Left: Time since (m) and 15m delta with arrow. Right: Glucose value (mmol/L)"
+        displayName="Combo 3 mmol"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_4_mg"
+        description="Left: Time since (m) and 5m delta with arrow. Right: Glucose value (mg/dL)"
+        displayName="Combo 4 mg"
+        graphical="true"
+        icon="@mipmap/ic_launcher" />
+
+    <DataType
+        typeId="combo_4_mmol"
+        description="Left: Time since (m) and 5m delta with arrow. Right: Glucose value (mmol/L)"
+        displayName="Combo 4 mmol"
+        graphical="true"
         icon="@mipmap/ic_launcher" />
 
 </ExtensionInfo>

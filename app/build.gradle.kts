@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -12,18 +15,39 @@ android {
         applicationId = "com.sestanteanalyticsag.enhancedkaroov1"
         minSdk = 24
         targetSdk = 34
-                    versionCode = 5
-        versionName = "2.3.0"
+                    versionCode = 7
+        versionName = "2.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         create("release") {
-            storeFile = file("release-key.keystore")
-            storePassword = "release123"
-            keyAlias = "release-key"
-            keyPassword = "release123"
+            val keystorePropertiesFile = rootProject.file("local.properties")
+            val keystoreProperties = Properties()
+            if (keystorePropertiesFile.exists()) {
+                FileInputStream(keystorePropertiesFile).use { 
+                    keystoreProperties.load(it) 
+                }
+            }
+            
+            val keystorePath = keystoreProperties.getProperty("keystore.path")?.trim()
+            val keystorePassword = keystoreProperties.getProperty("keystore.password")?.trim()
+            val keystoreAlias = keystoreProperties.getProperty("keystore.alias")?.trim()
+            val keystoreKeyPassword = keystoreProperties.getProperty("keystore.keyPassword")?.trim() ?: keystorePassword
+            
+            if (keystorePath != null && keystorePassword != null && keystoreAlias != null) {
+                storeFile = file(keystorePath)
+                storePassword = keystorePassword
+                keyAlias = keystoreAlias
+                keyPassword = keystoreKeyPassword
+            } else {
+                // Fallback to debug keystore if not configured
+                storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
         }
     }
     

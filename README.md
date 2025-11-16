@@ -50,15 +50,30 @@ An Android application that fetches real-time blood glucose data from Nightscout
 
 ### Available Data Fields
 
+#### Basic Fields
 - **Glu. mg** - Blood glucose in mg/dL
-- **Glu. mmol** - Blood glucose in mmol/L
+- **Glu. mmol** - Blood glucose in mmol/L (1 decimal place)
 - **Time Since (s)** - Seconds since last reading
-- **Time Since** - Formatted time (h:m:s) since last reading
-- **Direction** - Glucose trend with arrow indicators
+- **Time Since (m)** - Formatted time (h:m:s) since last reading
+- **Direction** - Glucose trend with arrow indicators (↑↑, ↑, ↗, →, ↘, ↓, ↓↓)
+
+#### Delta Fields
 - **15m Δ mg** - 15-minute glucose change in mg/dL
 - **15m Δ mmol** - 15-minute glucose change in mmol/L
 - **5m Δ mg** - 5-minute glucose change in mg/dL
 - **5m Δ mmol** - 5-minute glucose change in mmol/L
+
+#### Combo Fields (Graphical)
+Combined fields that display multiple pieces of information in a single data field:
+
+- **Combo 1 mg** - Left: Time since (s) and 15m delta with arrow | Right: Glucose value (mg/dL)
+- **Combo 1 mmol** - Left: Time since (s) and 15m delta with arrow | Right: Glucose value (mmol/L)
+- **Combo 2 mg** - Left: Time since (s) and 5m delta with arrow | Right: Glucose value (mg/dL)
+- **Combo 2 mmol** - Left: Time since (s) and 5m delta with arrow | Right: Glucose value (mmol/L)
+- **Combo 3 mg** - Left: Time since (m) and 15m delta with arrow | Right: Glucose value (mg/dL)
+- **Combo 3 mmol** - Left: Time since (m) and 15m delta with arrow | Right: Glucose value (mmol/L)
+- **Combo 4 mg** - Left: Time since (m) and 5m delta with arrow | Right: Glucose value (mg/dL)
+- **Combo 4 mmol** - Left: Time since (m) and 5m delta with arrow | Right: Glucose value (mmol/L)
 
 ### Direction Indicators
 
@@ -247,6 +262,7 @@ The app provides convenient quick-fill buttons for common setups:
 
 ### Recommended Field Layout
 
+**Basic Layout:**
 ```
 ┌─────────────────────────────────┐
 │ Glu. mg    Direction    Time    │
@@ -256,6 +272,21 @@ The app provides convenient quick-fill buttons for common setups:
 │   +12 mg/dL  +5 mg/dL   8.1 mmol│
 └─────────────────────────────────┘
 ```
+
+**Combo Field Layout (Space Efficient):**
+```
+┌─────────────────────────────────┐
+│ Combo 1 mg    Combo 1 mmol      │
+│ 120s +15 ↑    120s +0.8 ↑       │
+│   145           8.1             │
+│                                │
+│ Combo 2 mg    Combo 2 mmol      │
+│ 120s +5 ↗     120s +0.3 ↗      │
+│   145           8.1             │
+└─────────────────────────────────┘
+```
+
+The combo fields combine time since, delta, and direction on the left with the glucose value on the right, making efficient use of screen space.
 
 ---
 
