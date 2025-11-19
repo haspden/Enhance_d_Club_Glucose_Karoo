@@ -49,7 +49,7 @@ object GlucoseUtils {
     
     fun calculateDeltaMmol(entries: List<GlucoseEntry>, minutes: Int): Double {
         val deltaMg = calculateDeltaMg(entries, minutes)
-        val deltaMmol = deltaMg / 18.0 // Convert mg/dl to mmol/L
+        val deltaMmol = deltaMg / 18.0182 // Convert mg/dl to mmol/L
         // Force decimal display by adding a tiny fractional part to whole numbers
         return if (deltaMmol == deltaMmol.toInt().toDouble()) {
             deltaMmol + 0.001 // Add tiny decimal to force display

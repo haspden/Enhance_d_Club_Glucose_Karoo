@@ -180,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             result.fold(
                 onSuccess = { glucoseEntry ->
                     Log.d(TAG, "Glucose: ${glucoseEntry.getGlucoseValue()} mg/dl, Direction: ${glucoseEntry.getDirectionArrow()}")
-        Log.d(TAG, "Raw glucose value: ${glucoseEntry.getGlucoseValue()} mg/dl, converted to: ${glucoseEntry.getGlucoseValue() / 18.0} mmol/L")
+        Log.d(TAG, "Raw glucose value: ${glucoseEntry.getGlucoseValue()} mg/dl, converted to: ${glucoseEntry.getGlucoseValue() / 18.0182} mmol/L")
         Log.d(TAG, "Data timestamp: ${glucoseEntry.date}")
                     runOnUiThread {
                         updateGlucoseDisplay(glucoseEntry)
@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
     
     private fun updateGlucoseDisplay(glucoseEntry: com.sestanteanalyticsag.enhancedkaroov1.data.GlucoseEntry) {
         val glucoseValueMgdl = glucoseEntry.getGlucoseValue()
-        val glucoseValueMmol = glucoseValueMgdl / 18.0
+        val glucoseValueMmol = glucoseValueMgdl / 18.0182
         val direction = glucoseEntry.getDirectionArrow()
         
         // Display mg/dl
