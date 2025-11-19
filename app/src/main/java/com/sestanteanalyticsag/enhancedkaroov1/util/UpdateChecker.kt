@@ -54,7 +54,10 @@ class UpdateChecker(private val context: Context) {
             val latestRelease = githubApiService.getLatestRelease(REPO_OWNER, REPO_NAME)
             
             val currentVersion = Constants.APP_VERSION
-            val latestVersion = latestRelease.tag_name.removePrefix("v")
+            // Remove "v" prefix and any suffix like "-beta", "-alpha", etc.
+            val latestVersion = latestRelease.tag_name
+                .removePrefix("v")
+                .split("-")[0] // Take only the version part before any suffix
             
             Log.d(TAG, "Current version: $currentVersion, Latest version: $latestVersion")
             
@@ -162,8 +165,12 @@ class UpdateChecker(private val context: Context) {
     }
     
     private fun isNewerVersion(currentVersion: String, newVersion: String): Boolean {
-        val currentParts = currentVersion.split(".").map { it.toIntOrNull() ?: 0 }
-        val newParts = newVersion.split(".").map { it.toIntOrNull() ?: 0 }
+        // Remove any suffixes like "-beta", "-alpha", etc. from both versions
+        val cleanCurrent = currentVersion.split("-")[0]
+        val cleanNew = newVersion.split("-")[0]
+        
+        val currentParts = cleanCurrent.split(".").map { it.toIntOrNull() ?: 0 }
+        val newParts = cleanNew.split(".").map { it.toIntOrNull() ?: 0 }
         
         val maxLength = maxOf(currentParts.size, newParts.size)
         

@@ -222,6 +222,7 @@ The app supports multiple Nightscout data sources:
 - **Requirements**: Phone hotspot enabled, xDrip+ configured for broadcast
 - **Auto-detection**: App automatically detects gateway IP when connected to hotspot
 - **Example**: `http://192.168.1.1:17580/sgv.json`
+- **⚠️ Important Note**: Local broadcast from xDrip+ on a phone via hotspot may not be possible on recent Android devices due to Layer 2 Firewalls. This is a security feature in newer Android versions that prevents devices on the same network from communicating directly. If this method doesn't work, consider using a cloud-based Nightscout server or running xDrip+ locally on the Karoo device instead.
 
 #### 3. **Local Karoo Device** (xDrip+ Local)
 
@@ -234,8 +235,8 @@ The app supports multiple Nightscout data sources:
 
 The app provides convenient quick-fill buttons for common setups:
 
-- **Local Web** - `http://127.0.0.1:17580/sgv.json`
-- **Hotspot Device** - Auto-detects gateway IP and sets `http://[GATEWAY_IP]:17580/sgv.json`
+- **Local Web** - `http://127.0.0.1:17580/sgv.json` (e.g. xDrip+ installed on Karoo device)
+- **Hotspot Device** - Auto-detects gateway IP and sets `http://[GATEWAY_IP]:17580/sgv.json` (⚠️ May not work on recent Android devices due to Layer 2 Firewalls)
 - **Nightscout** - `https://mynightscout.com/api/v1/entries/sgv.json`
 
 ### App Settings
@@ -325,6 +326,7 @@ The combo fields combine time since, delta, and direction on the left with the g
 - Check that xDrip+ is configured to broadcast glucose data
 - Verify the Karoo is connected to the phone's hotspot
 - Try manually entering the gateway IP if auto-detection fails
+- **⚠️ Layer 2 Firewall**: Recent Android devices may have Layer 2 Firewalls enabled that prevent devices on the same hotspot network from communicating directly. If hotspot broadcast doesn't work, this is likely the cause. Consider using a cloud-based Nightscout server or running xDrip+ locally on the Karoo device instead.
 
 ### Debug Information
 
